@@ -21,7 +21,7 @@ export async function indexRoute(req: Request, res: Response) {
 
 const prisma = new PrismaClient();
 
-teamsRouter.get('/teams', async (req: Request, res: Response) => {
+teamsRouter.get('/', async (req: Request, res: Response) => {
     try {
       const teams = await prisma.team.findMany();
       res.json(teams);
@@ -30,7 +30,7 @@ teamsRouter.get('/teams', async (req: Request, res: Response) => {
     }
 });
   
-teamsRouter.get('/teams/:slug', async (req: Request, res: Response) => {
+teamsRouter.get('/:slug', async (req: Request, res: Response) => {
     const { slug } = req.params;
     try {
       const team = await prisma.team.findUnique({
@@ -47,14 +47,11 @@ teamsRouter.get('/teams/:slug', async (req: Request, res: Response) => {
     }
 });
 
-teamsRouter.post('/teams', async (req: Request, res: Response) => {
+teamsRouter.post('/', async (req: Request, res: Response) => {
     const { name, description } = req.body;
   
-    // Validate the input...
-    // For demonstration, assuming validation is done and `slug` is generated
-  
     try {
-      const slug = generateSlug(name); // Implement this function to generate a slug based on the name
+      const slug = generateSlug(name); // generate a slug based on the name
       const team = await prisma.team.create({
         data: { name, slug, description },
       });
@@ -65,7 +62,7 @@ teamsRouter.post('/teams', async (req: Request, res: Response) => {
     }
 });
 
-teamsRouter.patch('/teams/:slug', async (req: Request, res: Response) => {
+teamsRouter.patch('/:slug', async (req: Request, res: Response) => {
     const { slug } = req.params;
     const { name, description } = req.body;
 
@@ -83,7 +80,7 @@ teamsRouter.patch('/teams/:slug', async (req: Request, res: Response) => {
     }
 });
 
-teamsRouter.delete('/teams/:slug', async (req: Request, res: Response) => {
+teamsRouter.delete('/:slug', async (req: Request, res: Response) => {
     const { slug } = req.params;
 
     try {

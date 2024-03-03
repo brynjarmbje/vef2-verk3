@@ -1,23 +1,25 @@
 export class Logger {
-  constructor(silent = false) {
+  private silent: boolean;
+
+  constructor(silent: boolean = false) {
     this.silent = silent;
   }
 
-  info(...messages) {
+  info(...messages: unknown[]): void {
     if (this.silent) {
       return;
     }
     console.info(...messages);
   }
 
-  warn(...messages) {
+  warn(...messages: unknown[]): void {
     if (this.silent) {
       return;
     }
     console.warn(...messages);
   }
 
-  error(...messages) {
+  error(...messages: unknown[]): void {
     if (this.silent) {
       return;
     }
