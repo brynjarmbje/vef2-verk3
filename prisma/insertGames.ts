@@ -44,14 +44,13 @@ const insertGames = async () => {
     console.log('All valid games inserted.');
   };
   
-  // Dummy function for resolving team names to IDs - implement according to your logic
-  async function resolveTeamId(teamName: any) {
+  async function resolveTeamId(teamName: string): Promise<number | null> {
     const team = await prisma.team.findUnique({
       where: {
         name: teamName,
       },
     });
-    return team?.id;
+    return team?.id ?? null; // Returns the team's ID if found, otherwise null
   }
   
   insertGames()

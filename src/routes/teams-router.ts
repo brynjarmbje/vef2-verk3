@@ -1,6 +1,5 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 import { getTeams } from '../lib/teams.js';
-import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { generateSlug } from '../utils/slugify.js';
 export const teamsRouter = express.Router();
