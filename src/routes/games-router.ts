@@ -1,5 +1,6 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import { PrismaClient } from '@prisma/client';
+import { createGameValidationMiddleware, sanitizationMiddleware, xssSanitizationMiddleware } from '../lib/validation.js';
 
 const prisma = new PrismaClient();
 const gamesRouter = express.Router();
@@ -46,13 +47,22 @@ gamesRouter.get('/:id', async (req, res) => {
 });
 
 // POST /games - Create a new game
-gamesRouter.post('/', async (req, res) => {
+gamesRouter.post('/', createGameValidationMiddleware(), xssSanitizationMiddleware(), sanitizationMiddleware(), async (req: Request, res: Response) => {
+  // Destructuring directly from req.body based on validation and original field names
   const { date, home, away, home_score, away_score } = req.body;
+
   try {
+    // Assuming your Prisma schema expects `home` and `away` as foreign keys, ensure they are integers
     const newGame = await prisma.game.create({
-      data: { date, home, away, home_score, away_score },
+      data: { 
+        date: new Date(date), // Convert string to Date object if necessary
+        home: parseInt(home), // Convert to integer if not already
+        away: parseInt(away), // Convert to integer if not already
+        home_score: parseInt(home_score), // Ensure score is an integer
+        away_score: parseInt(away_score), // Ensure score is an integer
+      },
     });
-    res.status(200).json(newGame);
+    res.status(201).json(newGame); // Use HTTP 201 for successful creation
   } catch (error) {
     console.error('Failed to create a new game:', error);
     res.status(400).json({ error: 'Bad Request - Invalid game data' });
