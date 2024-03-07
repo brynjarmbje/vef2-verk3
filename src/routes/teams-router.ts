@@ -2,6 +2,8 @@ import express, { Request, Response } from 'express';
 import { getTeams } from '../lib/teams.js';
 import { PrismaClient } from '@prisma/client';
 import { generateSlug } from '../utils/slugify.js';
+import { teamValidationMiddleware, sanitizationMiddleware, xssSanitizationMiddleware } from '../lib/validation.js';
+
 export const teamsRouter = express.Router();
 
 export async function indexRoute(req: Request, res: Response) {
@@ -20,7 +22,7 @@ export async function indexRoute(req: Request, res: Response) {
 
 const prisma = new PrismaClient();
 
-teamsRouter.get('/', async (req: Request, res: Response) => {
+teamsRouter.get('/', xssSanitizationMiddleware,async (req: Request, res: Response) => {
     try {
       const teams = await prisma.team.findMany();
       res.json(teams);
@@ -29,7 +31,7 @@ teamsRouter.get('/', async (req: Request, res: Response) => {
     }
 });
   
-teamsRouter.get('/:slug', async (req: Request, res: Response) => {
+teamsRouter.get('/:slug',xssSanitizationMiddleware, async (req: Request, res: Response) => {
     const { slug } = req.params;
     try {
       const team = await prisma.team.findUnique({
@@ -46,7 +48,7 @@ teamsRouter.get('/:slug', async (req: Request, res: Response) => {
     }
 });
 
-teamsRouter.post('/', async (req: Request, res: Response) => {
+teamsRouter.post('/', teamValidationMiddleware(), xssSanitizationMiddleware, async (req: Request, res: Response) => {
     const { name, description } = req.body;
   
     try {
@@ -61,7 +63,7 @@ teamsRouter.post('/', async (req: Request, res: Response) => {
     }
 });
 
-teamsRouter.patch('/:slug', async (req: Request, res: Response) => {
+teamsRouter.patch('/:slug', teamValidationMiddleware(), xssSanitizationMiddleware,  async (req: Request, res: Response) => {
     const { slug } = req.params;
     const { name, description } = req.body;
 
@@ -79,7 +81,7 @@ teamsRouter.patch('/:slug', async (req: Request, res: Response) => {
     }
 });
 
-teamsRouter.delete('/:slug', async (req: Request, res: Response) => {
+teamsRouter.delete('/:slug', xssSanitizationMiddleware, async (req: Request, res: Response) => {
     const { slug } = req.params;
 
     try {

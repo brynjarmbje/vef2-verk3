@@ -9,7 +9,7 @@ const gamesRouter = express.Router();
 gamesRouter.use(express.json());
 
 // GET /games - Retrieve a list of games
-gamesRouter.get('/', async (req, res) => {
+gamesRouter.get('/', xssSanitizationMiddleware,async (req: Request, res: Response) => {
   try {
     const games = await prisma.game.findMany({
       include: {
@@ -25,7 +25,7 @@ gamesRouter.get('/', async (req, res) => {
 });
 
 // GET /games/:id - Retrieve a single game by ID
-gamesRouter.get('/:id', async (req, res) => {
+gamesRouter.get('/:id', xssSanitizationMiddleware, async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const game = await prisma.game.findUnique({
@@ -70,7 +70,7 @@ gamesRouter.post('/', createGameValidationMiddleware(), xssSanitizationMiddlewar
 });
 
 // PATCH /games/:id - Update a game
-gamesRouter.patch('/:id', async (req, res) => {
+gamesRouter.patch('/:id', createGameValidationMiddleware(), xssSanitizationMiddleware, async (req: Request, res: Response) => {
   const { id } = req.params;
   const { date, home, away, home_score, away_score } = req.body;
   try {
@@ -87,7 +87,7 @@ gamesRouter.patch('/:id', async (req, res) => {
 });
 
 // DELETE /games/:id - Delete a game
-gamesRouter.delete('/:id', async (req, res) => {
+gamesRouter.delete('/:id', xssSanitizationMiddleware,async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     await prisma.game.delete({

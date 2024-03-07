@@ -26,8 +26,8 @@ model Team {
   name        String @unique
   slug        String @unique
   description String?
-  homeGames   Game[] @relation("HomeTeam") // Relation for games where the team is playing at home
-  awayGames   Game[] @relation("AwayTeam") // Relation for games where the team is playing away
+  homeGames   Game[] @relation("HomeTeam")
+  awayGames   Game[] @relation("AwayTeam")
 }
 
 model Game {
@@ -37,6 +37,6 @@ model Game {
   away       Int
   home_score Int
   away_score Int
-  homeTeam   Team     @relation("HomeTeam", fields: [home], references: [id])
-  awayTeam   Team     @relation("AwayTeam", fields: [away], references: [id])
+  homeTeam   Team     @relation("HomeTeam", fields: [home], references: [id], onDelete: Cascade)
+  awayTeam   Team     @relation("AwayTeam", fields: [away], references: [id], onDelete: Cascade)
 }

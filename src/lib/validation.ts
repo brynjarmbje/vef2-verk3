@@ -54,12 +54,31 @@ export const createGameValidationMiddleware = () => [
     .isInt({ min: 0, max: 99 }),
 ];
 
+export const teamValidationMiddleware = () => [
+  // Validate 'name'
+  body('name')
+    .trim()
+    .isLength({ min: 3, max: 128 })
+    .withMessage('Nafn liðs verður að vera á milli 3 og 128 stafir')
+    .matches(/^[a-z0-9 -]+$/i)
+    .withMessage('Nafn má aðeins innihalda enska stafi, tölustafi og bil')
+    .customSanitizer(value => value.toLowerCase().replace(/\s+/g, '-')),
+
+  // Validate 'description'
+  body('description')
+    .optional({ checkFalsy: true })
+    .isLength({ max: 1024 })
+    .withMessage('Lýsing má ekki vera lengri en 1024 stafir')
+    .trim(),
+];
+
 export const xssSanitizationMiddleware = () => [
   body('date').customSanitizer(xssSanitize),
   body('home').customSanitizer(xssSanitize),
   body('away').customSanitizer(xssSanitize),
   body('home_score').customSanitizer(xssSanitize),
   body('away_score').customSanitizer(xssSanitize),
+  body(['name', 'description']).customSanitizer(xssSanitize),
 ];
 
 export const sanitizationMiddleware = () => [

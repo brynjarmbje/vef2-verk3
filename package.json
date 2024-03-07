@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon",
-    "start": "node --loader ts-node/esm ./src/app.ts"
+    "start": "node --loader ts-node/esm ./src/app.ts",
+    "insert:games": "node --loader ts-node/esm prisma/insertGames.ts",
+    "insert:teams": "node --loader ts-node/esm prisma/insertGames.ts"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +20,7 @@
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
     "pg": "^8.11.3",
-    "xss": "^1.0.14"
+    "xss": "^1.0.15"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
