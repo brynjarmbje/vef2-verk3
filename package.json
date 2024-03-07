@@ -9,7 +9,7 @@
     "start": "node --loader ts-node/esm ./src/app.ts",
     "insert:games": "node --loader ts-node/esm prisma/insertGames.ts",
     "insert:teams": "node --loader ts-node/esm prisma/insertGames.ts",
-    "test": "jest"
+    "test": "NODE_ENV=test jest"
   },
   "keywords": [],
   "author": "",

@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../app.js'; // 
+import app from '../app.js';
 
 describe('Teams and Games API Integration Tests', () => {
   let teamSlug: string;
@@ -67,3 +67,4 @@ describe('Teams and Games API Integration Tests', () => {
       .expect(204); // Adjust based on your API's response for a successful deletion
   });
 });
+
