@@ -9,7 +9,7 @@ const gamesRouter = express.Router();
 gamesRouter.use(express.json());
 
 // GET /games - Retrieve a list of games
-gamesRouter.get('/', xssSanitizationMiddleware,async (req: Request, res: Response) => {
+gamesRouter.get('/', xssSanitizationMiddleware(),async (req: Request, res: Response) => {
   try {
     const games = await prisma.game.findMany({
       include: {
@@ -25,7 +25,7 @@ gamesRouter.get('/', xssSanitizationMiddleware,async (req: Request, res: Respons
 });
 
 // GET /games/:id - Retrieve a single game by ID
-gamesRouter.get('/:id', xssSanitizationMiddleware, async (req: Request, res: Response) => {
+gamesRouter.get('/:id', xssSanitizationMiddleware(), async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const game = await prisma.game.findUnique({
@@ -62,7 +62,7 @@ gamesRouter.post('/', createGameValidationMiddleware(), xssSanitizationMiddlewar
         away_score: parseInt(away_score), // Ensure score is an integer
       },
     });
-    res.status(201).json(newGame); // Use HTTP 201 for successful creation
+    res.status(200).json(newGame); // Use HTTP 201 for successful creation
   } catch (error) {
     console.error('Failed to create a new game:', error);
     res.status(400).json({ error: 'Bad Request - Invalid game data' });
@@ -70,7 +70,7 @@ gamesRouter.post('/', createGameValidationMiddleware(), xssSanitizationMiddlewar
 });
 
 // PATCH /games/:id - Update a game
-gamesRouter.patch('/:id', createGameValidationMiddleware(), xssSanitizationMiddleware, async (req: Request, res: Response) => {
+gamesRouter.patch('/:id', createGameValidationMiddleware(), xssSanitizationMiddleware(), async (req: Request, res: Response) => {
   const { id } = req.params;
   const { date, home, away, home_score, away_score } = req.body;
   try {
@@ -87,7 +87,7 @@ gamesRouter.patch('/:id', createGameValidationMiddleware(), xssSanitizationMiddl
 });
 
 // DELETE /games/:id - Delete a game
-gamesRouter.delete('/:id', xssSanitizationMiddleware,async (req: Request, res: Response) => {
+gamesRouter.delete('/:id', xssSanitizationMiddleware(),async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     await prisma.game.delete({

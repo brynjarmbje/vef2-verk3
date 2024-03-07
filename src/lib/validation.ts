@@ -61,8 +61,7 @@ export const teamValidationMiddleware = () => [
     .isLength({ min: 3, max: 128 })
     .withMessage('Nafn liðs verður að vera á milli 3 og 128 stafir')
     .matches(/^[a-z0-9 -]+$/i)
-    .withMessage('Nafn má aðeins innihalda enska stafi, tölustafi og bil')
-    .customSanitizer(value => value.toLowerCase().replace(/\s+/g, '-')),
+    .withMessage('Nafn má aðeins innihalda enska stafi, tölustafi og bil'),
 
   // Validate 'description'
   body('description')

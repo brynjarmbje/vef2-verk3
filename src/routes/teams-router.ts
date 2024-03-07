@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { getTeams } from '../lib/teams.js';
 import { PrismaClient } from '@prisma/client';
 import { generateSlug } from '../utils/slugify.js';
-import { teamValidationMiddleware, sanitizationMiddleware, xssSanitizationMiddleware } from '../lib/validation.js';
+import { teamValidationMiddleware, xssSanitizationMiddleware } from '../lib/validation.js';
 
 export const teamsRouter = express.Router();
 
@@ -22,7 +22,7 @@ export async function indexRoute(req: Request, res: Response) {
 
 const prisma = new PrismaClient();
 
-teamsRouter.get('/', xssSanitizationMiddleware,async (req: Request, res: Response) => {
+teamsRouter.get('/', xssSanitizationMiddleware(),async (req: Request, res: Response) => {
     try {
       const teams = await prisma.team.findMany();
       res.json(teams);
@@ -31,7 +31,7 @@ teamsRouter.get('/', xssSanitizationMiddleware,async (req: Request, res: Respons
     }
 });
   
-teamsRouter.get('/:slug',xssSanitizationMiddleware, async (req: Request, res: Response) => {
+teamsRouter.get('/:slug',xssSanitizationMiddleware(), async (req: Request, res: Response) => {
     const { slug } = req.params;
     try {
       const team = await prisma.team.findUnique({
@@ -48,7 +48,7 @@ teamsRouter.get('/:slug',xssSanitizationMiddleware, async (req: Request, res: Re
     }
 });
 
-teamsRouter.post('/', teamValidationMiddleware(), xssSanitizationMiddleware, async (req: Request, res: Response) => {
+teamsRouter.post('/', teamValidationMiddleware(), xssSanitizationMiddleware(), async (req: Request, res: Response) => {
     const { name, description } = req.body;
   
     try {
@@ -56,14 +56,13 @@ teamsRouter.post('/', teamValidationMiddleware(), xssSanitizationMiddleware, asy
       const team = await prisma.team.create({
         data: { name, slug, description },
       });
-  
       res.status(200).json(team);
     } catch (error) {
       res.status(400).json({ error: 'Bad Request' });
     }
 });
 
-teamsRouter.patch('/:slug', teamValidationMiddleware(), xssSanitizationMiddleware,  async (req: Request, res: Response) => {
+teamsRouter.patch('/:slug', teamValidationMiddleware(), xssSanitizationMiddleware(),  async (req: Request, res: Response) => {
     const { slug } = req.params;
     const { name, description } = req.body;
 
@@ -72,7 +71,7 @@ teamsRouter.patch('/:slug', teamValidationMiddleware(), xssSanitizationMiddlewar
             where: { slug },
             data: { name, description },
         });
-        res.json(updatedTeam);
+        res.status(200).json(updatedTeam);
     } catch (error) {
         console.error('Failed to update team:', error);
 
@@ -81,7 +80,7 @@ teamsRouter.patch('/:slug', teamValidationMiddleware(), xssSanitizationMiddlewar
     }
 });
 
-teamsRouter.delete('/:slug', xssSanitizationMiddleware, async (req: Request, res: Response) => {
+teamsRouter.delete('/:slug', xssSanitizationMiddleware(), async (req: Request, res: Response) => {
     const { slug } = req.params;
 
     try {
